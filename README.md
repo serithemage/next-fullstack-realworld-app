@@ -88,6 +88,12 @@ npm run dev
 
 `npm run seed` 실행 시 3명의 샘플 사용자와 12개 이상의 글이 생성된다.
 
+| 사용자 | 이메일 | 비밀번호 |
+|--------|--------|----------|
+| Alice | `alice@prisma.io` | `123456` |
+| Gerome | `gerome@realworld.io` | `123456` |
+| Anah Benešová | `anah@realworld.io` | `123456` |
+
 ## 프로젝트 구조
 
 ```
@@ -145,6 +151,22 @@ docker compose -f docker-compose.production.yml up -d
 # http://localhost:3000
 ```
 
+## Claude Code 스킬
+
+프로젝트에 맞춤화된 Claude Code 스킬이 `.claude/skills/`에 정의되어 있다.
+
+| 스킬 | 명령 | 호출 방식 | 설명 |
+|------|------|----------|------|
+| **gen-test** | `/gen-test [파일] [유형]` | 자동/수동 | ADR-007 기반 테스트 파일 생성 |
+| **run-tests** | `/run-tests [유형] [--coverage]` | 수동 | 테스트 실행 + 커버리지 보고 |
+| **gen-api-route** | `/gen-api-route [리소스] [메서드]` | 수동 | 프로젝트 패턴에 맞는 API 라우트 스캐폴딩 |
+| **local-ci** | `/local-ci [--fix]` | 수동 | 로컬 CI 파이프라인 실행 (lint→build→test→scan) |
+| **i18n-sync** | `/i18n-sync [check\|add\|sync]` | 자동/수동 | 번역 키 누락 체크 및 로케일 동기화 |
+| **db-migrate** | `/db-migrate [migrate\|seed\|reset]` | 수동 | Prisma 마이그레이션 워크플로우 |
+| **security-scan** | `/security-scan [--full]` | 수동 | 의존성 취약점 + 시크릿 노출 검사 |
+
+> **자동 호출:** `gen-test`와 `i18n-sync`은 Claude가 맥락에 맞게 자동으로 실행할 수 있다. 나머지는 `/명령어`로만 실행된다.
+
 ## 문서
 
 | 문서 | 설명 |
@@ -154,6 +176,7 @@ docker compose -f docker-compose.production.yml up -d
 | [바이브 코딩 워크플로우](docs/vibe-coding-workflow.md) | OpenSpec 기반 AI 협업 개발 워크플로우 가이드 |
 | [코드 컨벤션](docs/code-conventions.md) | 코드 스타일, 커밋, PR 규칙 |
 | [전환 계획](docs/vibe-coding-transition-plan.md) | 바이브 코딩 프로젝트 전환 전체 계획 |
+| [Claude Code 스킬 가이드](docs/claude-code-skills.md) | 프로젝트 맞춤 스킬 사용법과 설계 원칙 |
 
 ## 참고
 

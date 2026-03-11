@@ -89,9 +89,9 @@ NextAuth 4 Credentials Provider (`src/libs/auth.ts`):
 
 Prisma 클라이언트 싱글턴: `src/libs/prisma.ts` (개발 중 hot-reload 시 다중 인스턴스 방지).
 
-### Server Actions
+### Data Fetching (서버 사이드)
 
-`src/actions/` — 서버 사이드 데이터 fetching 함수들. 페이지 컴포넌트에서 직접 호출:
+`src/actions/` — 서버 컴포넌트에서 호출하는 데이터 조회 함수들. Next.js Server Actions(`'use server'`)가 아닌 일반 async 함수이다 (`getUserProfile`만 예외적으로 `'use server'` 사용):
 
 - `getCurrentUser()` — 세션 기반 현재 사용자 조회
 - `getArticles(params)` — 필터링(tag, feed, author, favorited) + 페이지네이션
@@ -108,6 +108,7 @@ next-intl 기반. `localePrefix: 'as-needed'` 설정.
 - 클라이언트: `useTranslations(namespace)`, `useLocale()`
 - 로케일 전환: `useRouter().replace(pathname, { locale })`
 - `src/navigation.ts`에서 next-intl의 `Link`, `redirect`, `usePathname`, `useRouter`를 re-export
+- **중요**: 페이지 내 링크는 반드시 `@/navigation`의 `Link`를 사용해야 한다 (next/link 직접 사용 금지). 이 Link가 locale을 자동으로 처리한다
 
 ### Client-Side Patterns
 
@@ -116,6 +117,8 @@ next-intl 기반. `localePrefix: 'as-needed'` 설정.
 - 상수: `ARTICLE_PAGE_LIMIT = 10`, `defaultImage` (`src/utils/constants.ts`)
 
 ## Code Style
+
+> 상세한 코드 컨벤션은 [docs/code-conventions.md](docs/code-conventions.md) 참조.
 
 - **Path alias**: `@/*` → `./src/*`
 - **Formatter**: Prettier — no semicolons, single quotes, 80 width, 2 tab

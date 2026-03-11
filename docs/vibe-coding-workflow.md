@@ -2,6 +2,8 @@
 
 이 프로젝트는 **OpenSpec** 을 사용하여 AI 에이전트와의 협업 개발(바이브 코딩)을 구조화한다. 변경 사항을 제안 → 설계 → 구현 → 보관의 생명주기로 관리한다.
 
+> **참고:** 이 프로젝트의 AI 에이전트는 **Claude Code** (claude.ai/code)를 사용한다. OpenSpec 명령어(`/opsx:explore`, `/opsx:propose` 등)는 Claude Code의 skill로 등록되어 있다.
+
 ---
 
 ## OpenSpec이란?
