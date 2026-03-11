@@ -26,3 +26,13 @@ export const articleUpdateSchema = articleInputSchema.merge(
 export const commentSchema = z.object({
   comment: z.string().min(1, 'Body is required').max(65535, 'Body is too long'),
 })
+
+export const userUpdateSchema = z.object({
+  user: z.object({
+    username: z.string().max(20, 'Username is too long').optional(),
+    email: z.string().email('Invalid email').optional(),
+    bio: z.string().max(500, 'Bio is too long').optional(),
+    image: z.string().url('Invalid URL').optional().or(z.literal('')),
+    password: z.string().min(6, 'Password is too short').optional(),
+  }),
+})

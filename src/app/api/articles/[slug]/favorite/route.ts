@@ -57,7 +57,7 @@ export const DELETE = async (
 ) => {
   const currentUser = await getCurrentUser()
   if (!currentUser) {
-    throw new Error('User not login')
+    return ApiResponse.unauthorized()
   }
 
   const article = await prisma.article.findUnique({

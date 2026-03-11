@@ -1,4 +1,5 @@
 import { marked } from 'marked'
+import DOMPurify from 'isomorphic-dompurify'
 
 interface ArticleBodyProps {
   body: string
@@ -10,7 +11,7 @@ const ArticleBody = ({ body }: ArticleBodyProps) => {
       <div
         className="col-md-12"
         dangerouslySetInnerHTML={{
-          __html: marked.parse(body),
+          __html: DOMPurify.sanitize(marked.parse(body) as string),
         }}
       />
     </div>
