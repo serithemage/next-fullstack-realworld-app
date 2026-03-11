@@ -1,48 +1,161 @@
 # ![RealWorld Example App](logo.png)
 
-### Next.js 14, React, Prisma, Postgres
+### Next.js 14 풀스택 RealWorld 앱
 
-demo available
-at [https://next-fullstack-realworld-app.vercel.app/](https://next-fullstack-realworld-app.vercel.app/)
+> [RealWorld](https://github.com/gothinkster/realworld) 스펙을 구현한 Medium.com 클론 애플리케이션
 
-## Screenshot
+**데모:** [https://next-fullstack-realworld-app.vercel.app/](https://next-fullstack-realworld-app.vercel.app/)
 
 ![RealWorld Example App](screenshot.png)
 
-## Development
+---
 
-First, run the development server:
+## 기술 스택
 
-```
+| 카테고리 | 기술 |
+|---------|------|
+| 프론트엔드 | Next.js 14 (App Router), React 18, TypeScript 5 |
+| 스타일링 | Tailwind CSS 3 |
+| 백엔드 | Next.js API Routes |
+| 데이터베이스 | PostgreSQL 13, Prisma 5 ORM |
+| 인증 | NextAuth 4 (JWT, Credentials Provider) |
+| 국제화 | next-intl (English, 中文简体) |
+| 검증 | Zod |
+| 배포 | Vercel (프로덕션), Docker Compose (로컬 개발) |
+
+## 주요 기능
+
+- **인증:** 회원가입, 로그인/로그아웃 (NextAuth JWT)
+- **글 관리:** 글 작성, 수정, 삭제 (Markdown 지원)
+- **댓글:** 글에 댓글 작성/삭제
+- **좋아요:** 글 좋아요/좋아요 취소
+- **팔로우:** 사용자 팔로우/언팔로우
+- **피드:** 글로벌 피드, 개인 피드 (팔로우 기반)
+- **태그:** 태그별 글 필터링
+- **프로필:** 사용자 프로필 조회, 설정 변경
+- **다국어:** English, 中文简体 지원 (locale 기반 라우팅)
+
+## 빠른 시작
+
+### 사전 요구사항
+
+- [Docker](https://www.docker.com/) & Docker Compose
+- (또는) Node.js 20+, PostgreSQL 13+
+
+### Docker로 실행 (권장)
+
+```bash
+# 저장소 클론
+git clone https://github.com/gardenofdev/next-fullstack-realworld-app.git
+cd next-fullstack-realworld-app
+
+# Docker Compose로 실행 (PostgreSQL + Next.js 개발 서버)
 docker-compose up --build --force-recreate
+
+# 브라우저에서 확인
+# http://localhost:3000
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+### 로컬 실행 (Node.js)
 
-## Production
+```bash
+# 의존성 설치
+npm install
+
+# 환경변수 설정 (.env 파일 참조)
+# POSTGRES_PRISMA_URL, NEXTAUTH_SECRET 등 설정 필요
+
+# DB 마이그레이션 및 시드 데이터 투입
+npm run migrate
+npm run seed
+
+# 개발 서버 실행
+npm run dev
+```
+
+### 환경변수
+
+| 변수 | 설명 |
+|------|------|
+| `POSTGRES_PRISMA_URL` | PostgreSQL 연결 URL (Connection Pooling) |
+| `POSTGRES_URL_NON_POOLING` | PostgreSQL 직접 연결 URL (마이그레이션용) |
+| `NEXTAUTH_URL` | NextAuth 콜백 URL (예: `http://localhost:3000`) |
+| `NEXTAUTH_SECRET` | JWT 서명용 시크릿 |
+| `DEFAULT_USER_AVATAR` | 기본 사용자 아바타 URL |
+| `NEXT_PUBLIC_API_URL` | 공개 API 베이스 경로 (예: `/api`) |
+
+### 시드 데이터
+
+`npm run seed` 실행 시 3명의 샘플 사용자와 12개 이상의 글이 생성된다.
+
+## 프로젝트 구조
 
 ```
-# Build prod
+src/
+├── app/
+│   ├── (browse)/[locale]/   # 페이지 라우팅 (locale 기반)
+│   │   ├── (home)/          # 홈 (글 피드 + 태그)
+│   │   ├── article/[slug]/  # 글 상세
+│   │   ├── editor/          # 글 작성/수정
+│   │   ├── profile/[username]/ # 사용자 프로필
+│   │   ├── login/ & register/ # 인증
+│   │   └── settings/        # 사용자 설정
+│   └── api/                 # REST API 라우트
+├── actions/                 # 서버 사이드 데이터 fetching
+├── components/              # UI 컴포넌트
+├── middlewares/              # 미들웨어 (auth, feed, intl)
+├── libs/                    # 라이브러리 설정 (auth, prisma)
+├── utils/                   # 유틸리티 함수
+├── validation/              # Zod 스키마
+└── types/                   # TypeScript 타입 정의
+prisma/
+├── schema.prisma            # DB 스키마
+└── seed.ts                  # 시드 데이터
+messages/
+├── en.json                  # 영어 번역
+└── zh.json                  # 중국어 간체 번역
+```
+
+## 개발 명령어
+
+| 명령어 | 설명 |
+|--------|------|
+| `npm run dev` | Next.js 개발 서버 실행 |
+| `npm run build` | 프로덕션 빌드 |
+| `npm run lint` | ESLint + Prettier 검사 |
+| `npm run migrate` | Prisma 마이그레이션 실행 |
+| `npm run seed` | 시드 데이터 투입 |
+| `npm run studio` | Prisma Studio (DB GUI) 실행 |
+
+## 배포
+
+### Vercel
+
+이 프로젝트는 [Vercel](https://vercel.com)에 최적화되어 있다. GitHub 저장소를 연결하면 main 브랜치 푸시 시 자동 배포된다.
+
+### Docker (프로덕션)
+
+```bash
+# 프로덕션 이미지 빌드
 docker compose -f docker-compose.production.yml build
 
-# Up prod in detached mode
+# 백그라운드 실행
 docker compose -f docker-compose.production.yml up -d
+
+# http://localhost:3000
 ```
 
-Open http://localhost:3000.
+## 문서
 
-## Key Features
+| 문서 | 설명 |
+|------|------|
+| [CLAUDE.md](CLAUDE.md) | AI 에이전트를 위한 프로젝트 아키텍처 가이드 |
+| [아키텍처 의사결정 기록 (ADR)](docs/adr/README.md) | 주요 기술 선택의 맥락과 근거 (10건) |
+| [바이브 코딩 워크플로우](docs/vibe-coding-workflow.md) | OpenSpec 기반 AI 협업 개발 워크플로우 가이드 |
+| [코드 컨벤션](docs/code-conventions.md) | 코드 스타일, 커밋, PR 규칙 |
+| [전환 계획](docs/vibe-coding-transition-plan.md) | 바이브 코딩 프로젝트 전환 전체 계획 |
 
-1. Authentication via Next-Auth
-2. Login/ Register
-3. Articles: Create, Edit, Delete
-4. Filter articles by tag, author, favorited
-5. Comments on articles
-6. Favorite articles
-7. Follow other users
-8. i18n: English, Chinese Simplified
-
-## References
+## 참고
 
 - [vue3-realworld-example-app](https://github.com/gardenofdev/vue3-realworld-example-app)
 - [realworld](https://github.com/gothinkster/realworld)
